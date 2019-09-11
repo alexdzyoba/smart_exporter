@@ -57,7 +57,7 @@ var metrics = []SMARTMetric{
 		Metric: prometheus.NewGaugeVec(
 			prometheus.GaugeOpts{
 				Name: "smart_read_uncorrected_errors_total",
-				Help: "Number of elements in grown defect list",
+				Help: "Number of uncorrected read errors",
 			},
 			[]string{"device"},
 		),
@@ -67,7 +67,7 @@ var metrics = []SMARTMetric{
 		Metric: prometheus.NewGaugeVec(
 			prometheus.GaugeOpts{
 				Name: "smart_write_uncorrected_errors_total",
-				Help: "Number of elements in grown defect list",
+				Help: "Number of uncorrected write errors",
 			},
 			[]string{"device"},
 		),
