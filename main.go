@@ -151,5 +151,16 @@ func main() {
 	}()
 
 	http.Handle("/metrics", promhttp.Handler())
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`<html>
+			<head><title>SMART exporter</title></head>
+			<body>
+			<h1>SMART Exporter</h1>
+			<p><a href='/metrics'>Metrics</a></p>
+			</body>
+			</html>
+		`))
+	})
+
 	log.Fatal(http.ListenAndServe(*listen, nil))
 }
