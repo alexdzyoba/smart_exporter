@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"log"
 	"net/http"
@@ -10,19 +9,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexdzyoba/sys/block"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
-
-type lsblkJSONOutput struct {
-	Blockdevices []Blockdevice `json:"blockdevices"`
-}
-
-type Blockdevice struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
-}
 
 type SMARTMetric struct {
 	Regexp *regexp.Regexp
@@ -81,8 +72,8 @@ func lastField(line string) (float64, error) {
 	return val, nil
 }
 
-func (sm *SMARTMetric) collectDeviceMetrics(bd Blockdevice, ch chan<- prometheus.Metric) {
-	cmd := exec.Command("smartctl", "-i", "-A", "-l", "error", bd.Name)
+func (sm *SMARTMetric) collectDeviceMetrics(bd block.Device, ch chan<- prometheus.Metric) {
+	cmd := exec.Command("smartctl", "-i", "-A", "-l", "error", "/dev/"+bd.Name)
 	out, err := cmd.Output()
 	if err != nil {
 		// Ignore error to skip to the next device
@@ -111,21 +102,13 @@ func (sm *SMARTMetric) collectDeviceMetrics(bd Blockdevice, ch chan<- prometheus
 }
 
 func (sm SMARTMetric) Collect(ch chan<- prometheus.Metric) {
-	cmd := exec.Command("lsblk", "--nodeps", "--paths", "--json")
-	out, err := cmd.Output()
+	bds, err := block.ListDevices()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	var lsblk lsblkJSONOutput
-	err = json.Unmarshal(out, &lsblk)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
-	for _, bd := range lsblk.Blockdevices {
-		if bd.Type == "disk" {
+	for _, bd := range bds {
+		if bd.Type == block.TypeDisk {
 			sm.collectDeviceMetrics(bd, ch)
 		}
 	}
