@@ -25,3 +25,8 @@ Example scrape output with metrics:
     # HELP smart_reallocated_sectors_total Number of reallocated sectors
     # TYPE smart_reallocated_sectors_total gauge
     smart_reallocated_sectors_total{device="/dev/sda"} 0
+
+Docker image can be started with command:
+```
+docker run --privileged -p 8000:8000 ontrif/smart_exporter
+```
