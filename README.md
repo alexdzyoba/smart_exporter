@@ -3,6 +3,7 @@
 [![Release](https://img.shields.io/github/release/alexdzyoba/smart_exporter.svg?style=flat-square)](https://github.com/alexdzyoba/smart_exporter/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Build status](https://github.com/alexdzyoba/smart_exporter/workflows/Build/badge.svg)](https://github.com/alexdzyoba/smart_exporter/actions)
+[![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/ontrif/smart_exporter)](https://hub.docker.com/r/ontrif/smart_exporter)
 
 Prometheus exporter for critical S.M.A.R.T. metrics. It works by parsing
 smartctl output for every device. Parsing is performed independent of metrics
@@ -25,3 +26,8 @@ Example scrape output with metrics:
     # HELP smart_reallocated_sectors_total Number of reallocated sectors
     # TYPE smart_reallocated_sectors_total gauge
     smart_reallocated_sectors_total{device="/dev/sda"} 0
+
+Docker image can be started with command:
+```
+docker run --privileged -p 8000:8000 ontrif/smart_exporter
+```
