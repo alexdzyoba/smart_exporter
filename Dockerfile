@@ -6,6 +6,6 @@ RUN go build -v -o smart_exporter
 
 FROM alpine:3.13
 RUN apk add --no-cache smartmontools
-COPY --from=builder /proj/smart_exporter /
+COPY --from=builder /app/smart_exporter /
 CMD ["/smart_exporter"]
 EXPOSE 9649
